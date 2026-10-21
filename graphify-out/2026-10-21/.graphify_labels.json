@@ -1,0 +1,13 @@
+{
+  "0": "LegalEvaluator",
+  "1": "BaseSummarizer",
+  "2": "api/app.py",
+  "3": "ModelMetadata",
+  "4": "QwenSummarizer",
+  "7": "LedSummarizer",
+  "8": "test_api.py",
+  "9": "test_api_example.py",
+  "10": "startup.ps1",
+  "11": "src/__init__.py",
+  "12": "tests/__init__.py"
+}

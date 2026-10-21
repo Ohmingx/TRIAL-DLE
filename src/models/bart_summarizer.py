@@ -81,9 +81,8 @@ class BartSummarizer(BaseSummarizer):
             self.is_loaded = True
             logger.info("BartSummarizer successfully loaded on %s.", self.device)
         except Exception as e:
-            logger.error("Failed to load real BART weights: %s. Enabling dry-run fallback.", e)
-            self.dry_run = True
-            self.is_loaded = True
+            logger.exception("Failed to load real BART weights.")
+            raise RuntimeError("Failed to load real BART weights.") from e
 
         return self
 

@@ -4,19 +4,20 @@ Streamlit application for side-by-side inference, Pareto frontier visualization,
 """
 
 import json
+import os
 from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import requests
 import streamlit as st
 
+from src.dashboard.results import find_model_result
 from src.metrics.entity_extractor import LegalEntityExtractor
 from src.metrics.evaluator import LegalEvaluator
 from src.models.registry import (
-    MODEL_REGISTRY,
     get_all_model_metadata,
     get_pareto_benchmarks,
-    get_summarizer,
 )
 
 # Page configuration
@@ -149,6 +150,7 @@ SAMPLE_BILLS = {
     ),
 }
 
+
 # Sidebar navigation
 with st.sidebar:
     st.image(
@@ -171,7 +173,12 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("### ⚙️ Inference Controls")
-    dry_run_mode = st.toggle("Dry-Run / Fast Sim Mode", value=True, help="Toggle real weight inference vs fast benchmark simulation.")
+    dry_run_mode = st.toggle("Dry-Run / Fast Sim Mode", value=False, help="Toggle real weight inference vs fast benchmark simulation.")
+    api_base_url = st.text_input(
+        "Inference API URL",
+        value=os.getenv("SUMMARIZATION_API_URL", "http://127.0.0.1:8000"),
+        help="Local FastAPI URL or the current Colab tunnel URL. Do not include an endpoint path.",
+    ).strip().rstrip("/")
     max_tokens = st.slider("Max New Tokens", min_value=64, max_value=512, value=256, step=32)
     min_tokens = st.slider("Min New Tokens", min_value=16, max_value=128, value=32, step=16)
     beam_count = st.slider("Beam Count", min_value=1, max_value=4, value=2)
@@ -237,60 +244,122 @@ if nav_selection == "🏛️ Model Arena (Side-by-Side)":
             st.error("Please provide legal bill text to summarize.")
         elif not selected_models:
             st.warning("Please select at least one model.")
+        elif not api_base_url:
+            st.error("Enter the local or Colab inference API URL.")
         else:
-            with st.spinner("Executing legal inference across selected transformer architectures..."):
-                cols = st.columns(len(selected_models))
-                for idx, model_key in enumerate(selected_models):
-                    with cols[idx]:
-                        summarizer = get_summarizer(model_key, dry_run=dry_run_mode)
-                        res = summarizer.summarize(
-                            text=bill_input,
-                            max_new_tokens=max_tokens,
-                            min_new_tokens=min_tokens,
-                            num_beams=beam_count,
-                        )
+            with st.spinner(f"Running comparative inference via {api_base_url}..."):
+                payload = {
+                    "text": bill_input,
+                    "max_new_tokens": max_tokens,
+                    "min_new_tokens": min_tokens,
+                    "num_beams": beam_count,
+                    "models": selected_models,
+                    "dry_run": dry_run_mode,
+                }
+                headers = {
+                    "Content-Type": "application/json",
+                    "bypass-tunnel-reminder": "true",
+                }
+                try:
+                    response = requests.post(
+                        f"{api_base_url}/api/summarize",
+                        json=payload,
+                        headers=headers,
+                        timeout=600,
+                    )
+                    response.raise_for_status()
+                    res_json = response.json()
+                    st.session_state["comparative_results"] = res_json["results"]
+                    if dry_run_mode:
+                        st.warning("Dry-run is enabled: these are placeholders, not model-generated summaries.")
+                    else:
+                        st.success("Comparative inference complete.")
+                except requests.Timeout:
+                    st.error("The inference request timed out. Check that Colab is still running and try again.")
+                except requests.HTTPError as e:
+                    detail = e.response.text if e.response is not None else str(e)
+                    st.error(f"Inference API returned an error: {detail}")
+                except requests.RequestException as e:
+                    st.error(f"Could not reach the inference API at {api_base_url}: {e}")
 
-                        badge_class = {
-                            "bart_base_dense": "badge-bart",
-                            "led_base_sparse_4k": "badge-led",
-                            "qwen25_1_5b_causal_qlora": "badge-qwen",
-                        }.get(model_key, "badge-bart")
+    # Render unified comparative results from frontend state
+    if "comparative_results" in st.session_state and st.session_state["comparative_results"]:
+        results_data = st.session_state["comparative_results"]
+        cols = st.columns(len(selected_models))
 
-                        arch_name = {
-                            "bart_base_dense": "BART (Dense)",
-                            "led_base_sparse_4k": "LED (Sparse 4K)",
-                            "qwen25_1_5b_causal_qlora": "Qwen2.5 (QLoRA)",
-                        }.get(model_key, model_key)
+        for idx, model_key in enumerate(selected_models):
+            with cols[idx]:
+                badge_class = {
+                    "bart_base_dense": "badge-bart",
+                    "led_base_sparse_4k": "badge-led",
+                    "qwen25_1_5b_causal_qlora": "badge-qwen",
+                }.get(model_key, "badge-bart")
 
-                        st.markdown(
-                            f"<div class='arch-badge {badge_class}'>{arch_name}</div>",
-                            unsafe_allow_html=True,
-                        )
-                        st.markdown(f"### {res.hf_model_id.split('/')[-1]}")
+                arch_name = {
+                    "bart_base_dense": "BART (Dense)",
+                    "led_base_sparse_4k": "LED (Sparse 4K)",
+                    "qwen25_1_5b_causal_qlora": "Qwen2.5 (QLoRA)",
+                }.get(model_key, model_key)
 
-                        # Summary box
-                        st.info(res.summary_text)
+                model_label = {
+                    "bart_base_dense": "bart-base",
+                    "led_base_sparse_4k": "led-base-16384",
+                    "qwen25_1_5b_causal_qlora": "Qwen2.5-1.5B-Instruct",
+                }.get(model_key, model_key)
 
-                        # Metric metrics
-                        m1, m2 = st.columns(2)
-                        with m1:
-                            st.metric("Latency", f"{res.latency_ms:.1f} ms")
-                        with m2:
-                            st.metric("Speed", f"{res.ms_per_token:.1f} ms/tok")
+                st.markdown(
+                    f"<div class='arch-badge {badge_class}'>{arch_name}</div>",
+                    unsafe_allow_html=True,
+                )
+                st.markdown(f"### {model_label}")
 
-                        # Summary entities
-                        extracted = entity_extractor.extract(res.summary_text)
-                        st.caption(f"Entities Extracted: {extracted.total_count}")
+                model_res = find_model_result(results_data, model_key)
+                if model_res is not None:
+                    if isinstance(model_res, str):
+                        summary_text = model_res
+                        latency_ms = 0.0
+                        ms_per_tok = 0.0
+                    else:
+                        summary_text = model_res.get("summary_text") or model_res.get("summary") or model_res.get("text") or "No summary returned."
+                        latency_ms = float(model_res.get("latency_ms") or model_res.get("latency") or 0.0)
+                        token_count = len(summary_text.split())
+                        ms_per_tok = float(model_res.get("ms_per_token") or (round(latency_ms / max(1, token_count), 1) if latency_ms else 0.0))
 
-                        with st.expander("Show Extracted Legal Entities"):
-                            for sec in extracted.sections:
-                                st.markdown(f"<span class='entity-tag-section'>{sec}</span>", unsafe_allow_html=True)
-                            for usc in extracted.usc_citations:
-                                st.markdown(f"<span class='entity-tag-usc'>{usc}</span>", unsafe_allow_html=True)
-                            for mny in extracted.monetary_amounts:
-                                st.markdown(f"<span class='entity-tag-money'>{mny}</span>", unsafe_allow_html=True)
-                            for pct in extracted.percentages:
-                                st.markdown(f"<span class='entity-tag-pct'>{pct}</span>", unsafe_allow_html=True)
+                    # Summary box
+                    st.info(summary_text)
+
+                    # Metric indicators
+                    m1, m2 = st.columns(2)
+                    with m1:
+                        st.metric("Latency", f"{latency_ms:.1f} ms" if latency_ms > 0 else "Colab GPU")
+                    with m2:
+                        st.metric("Speed", f"{ms_per_tok:.1f} ms/tok" if ms_per_tok > 0 else "Fast")
+
+                    # Extracted legal entities
+                    extracted = entity_extractor.extract(summary_text)
+                    st.caption(f"Entities Extracted: {extracted.total_count}")
+
+                    with st.expander("Show Extracted Legal Entities"):
+                        for sec in extracted.sections:
+                            st.markdown(f"<span class='entity-tag-section'>{sec}</span>", unsafe_allow_html=True)
+                        for usc in extracted.usc_citations:
+                            st.markdown(f"<span class='entity-tag-usc'>{usc}</span>", unsafe_allow_html=True)
+                        for mny in extracted.monetary_amounts:
+                            st.markdown(f"<span class='entity-tag-money'>{mny}</span>", unsafe_allow_html=True)
+                        for pct in extracted.percentages:
+                            st.markdown(f"<span class='entity-tag-pct'>{pct}</span>", unsafe_allow_html=True)
+                else:
+                    received_keys = (
+                        [item.get("model_key") for item in results_data if isinstance(item, dict)]
+                        if isinstance(results_data, list)
+                        else list(results_data.keys())
+                        if isinstance(results_data, dict)
+                        else [type(results_data).__name__]
+                    )
+                    st.warning(
+                        f"No summary data received for {model_key}. "
+                        f"Models returned by API: {received_keys}"
+                    )
 
 # TAB 2: PARETO FRONTIER BENCHMARKS
 elif nav_selection == "📊 Pareto Frontier Benchmarks":

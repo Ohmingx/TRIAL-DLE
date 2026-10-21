@@ -90,7 +90,104 @@ Options:
 
 The health check confirms the API process is responding; it does not load the language models. If the script reports a health-check timeout, inspect its terminal output and try the manual API start below.
 
-## 6. Run services manually
+## 6. Run model inference on Colab with a local dashboard
+
+The Streamlit UI can stay on Windows while the FastAPI inference service and all three models run
+inside a Colab GPU runtime. The Colab workspace must contain this checkout, including the
+`artifacts/models/` adapter files. For a private GitHub repository, use your approved authenticated
+clone/upload workflow; do not put access tokens in notebook cells.
+
+In Colab, first ensure a GPU runtime is selected, then run:
+
+```python
+# Clone or mount the current project checkout that contains src/ and artifacts/models/.
+%cd /content
+!git clone https://github.com/Ohmingx/TRIAL-DLE.git
+%cd /content/TRIAL-DLE
+
+# Keep Colab's preinstalled CUDA-enabled PyTorch; install the model and API dependencies.
+%pip install transformers peft accelerate bitsandbytes pandas fastapi "uvicorn[standard]" huggingface_hub
+
+import torch
+print("CUDA available:", torch.cuda.is_available())
+if not torch.cuda.is_available():
+    raise RuntimeError("Select a GPU runtime in Colab before starting model inference.")
+```
+
+The model loaders intentionally use local-only Hugging Face loading. Download the three base
+models into the Colab cache before starting the API:
+
+```python
+from huggingface_hub import snapshot_download
+
+for model_id in (
+    "facebook/bart-base",
+    "allenai/led-base-16384",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+):
+    snapshot_download(repo_id=model_id)
+```
+
+Start the repository's real API (not a notebook with placeholder inference functions), then expose
+it through LocalTunnel in a separate cell:
+
+```python
+import subprocess
+import sys
+import time
+import requests
+
+api_process = subprocess.Popen(
+    [
+        sys.executable, "-m", "uvicorn", "src.api.app:app",
+        "--host", "0.0.0.0", "--port", "8000",
+    ],
+    cwd="/content/TRIAL-DLE",
+)
+
+for _ in range(60):
+    if api_process.poll() is not None:
+        raise RuntimeError("Colab API exited during startup.")
+    try:
+        health = requests.get("http://127.0.0.1:8000/api/health", timeout=2)
+        if health.ok and health.json().get("status") == "healthy":
+            print(health.json())
+            break
+    except requests.RequestException:
+        pass
+    time.sleep(1)
+else:
+    raise RuntimeError("Colab API did not become healthy.")
+```
+
+In another Colab cell:
+
+```python
+!npm install -g localtunnel
+!lt --port 8000
+```
+
+Copy the `https://...loca.lt` URL printed by LocalTunnel and use it on Windows:
+
+```powershell
+.\startup.ps1 -OnlyDashboard -RemoteApiUrl https://your-current-tunnel.loca.lt
+```
+
+`startup.ps1` checks the remote `/api/health` endpoint and starts only the local Streamlit UI.
+Alternatively, run Streamlit manually after setting the environment variable:
+
+```powershell
+$env:SUMMARIZATION_API_URL = "https://your-current-tunnel.loca.lt"
+python -m streamlit run src/dashboard/app.py --server.port 8501
+```
+
+Colab tunnel URLs are temporary and typically change after a runtime restart, so copy the new URL
+each time. The dashboard sends requests to `/api/summarize`; selected model keys are honored and
+generation runs on the Colab host. Leave Dry-Run disabled. If model loading or inference fails,
+the API returns an error rather than a fabricated dry-run summary. Keep the Colab notebook running
+while using the local dashboard.
+
+## 7. Run services manually
 
 Activate `.venv` first. Start each service in its own terminal, from the project root.
 
@@ -108,7 +205,7 @@ python -m streamlit run src/dashboard/app.py --server.port 8501
 
 On Linux/macOS, use the same commands after activating `.venv`. The API docs are at `http://localhost:8000/docs`; the dashboard is at `http://localhost:8501`.
 
-## 7. Verify the setup
+## 8. Verify the setup
 
 Run the automated test suite from the project root:
 
@@ -133,7 +230,7 @@ Invoke-RestMethod -Uri http://localhost:8000/api/summarize -Method Post -Content
 
 The `dry_run` response should include a non-empty placeholder summary and model metadata. To test real inference, set `dry_run` to `$false` after downloading the selected base model. For a direct model comparison, use `model_key = 'all'`; this requires all three base models for real inference.
 
-## 8. API routes
+## 9. API routes
 
 - `GET /api/health`: service and PyTorch device status.
 - `GET /api/models`: supported models and metadata.
@@ -144,7 +241,7 @@ The `dry_run` response should include a non-empty placeholder summary and model 
 
 The interactive request and response schemas are available at `/docs`.
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 - **`py` or `python` is not recognized:** install Python 3.11 and reopen PowerShell. Check with `py -3.11 --version`.
 - **The wrong interpreter is active:** activate `.venv` and check `python -c "import sys; print(sys.executable)"`.
@@ -154,7 +251,7 @@ The interactive request and response schemas are available at `/docs`.
 - **Dependency import errors after changing packages:** activate `.venv` and reinstall with `python -m pip install -r requirements.txt`.
 - **Model inference is slow or runs out of memory:** test one model at a time, reduce generation token limits, or use a machine with more available memory/VRAM.
 
-## 10. Repository layout
+## 11. Repository layout
 
 - `src/api/`: FastAPI application and request/response schemas.
 - `src/dashboard/`: Streamlit user interface.

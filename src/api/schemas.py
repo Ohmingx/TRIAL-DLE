@@ -9,6 +9,10 @@ from pydantic import BaseModel, Field, model_validator
 class SummarizeRequest(BaseModel):
     text: Optional[str] = Field(default=None, description="Raw text of the legal bill to summarize")
     bill_text: Optional[str] = Field(default=None, description="Alias for text")
+    models: Optional[List[str]] = Field(
+        default=None,
+        description="Optional model keys to run for a comparative request",
+    )
     model_key: str = Field(
         default="bart_base_dense",
         description="Target model: bart_base_dense, led_base_sparse_4k, qwen25_1_5b_causal_qlora, or 'all'",
@@ -29,6 +33,8 @@ class SummarizeRequest(BaseModel):
         if not content or not content.strip():
             raise ValueError("Either 'text' or 'bill_text' must be provided.")
         self.text = content.strip()
+        if self.min_new_tokens > self.max_new_tokens:
+            raise ValueError("'min_new_tokens' must be less than or equal to 'max_new_tokens'.")
         return self
 
 

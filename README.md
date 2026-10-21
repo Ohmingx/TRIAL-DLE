@@ -45,8 +45,13 @@ Run the automated PowerShell script to verify the environment, start both the Fa
 Options:
 - `.\startup.ps1 -OnlyAPI`: Launch only the FastAPI backend on port 8000.
 - `.\startup.ps1 -OnlyDashboard`: Launch only the Streamlit dashboard on port 8501.
-- `.\startup.ps1 -NoBrowser`: Start both services without automatically opening the browser.
-- `.\startup.ps1 -ApiPort 8080 -DashboardPort 8502`: Custom port mappings.
+- `.\startup.ps1 -WithGraph` (or `-Graph`): Launch the interactive Knowledge Graph viewer (`graphify-out/graph.html`) on port 8088 alongside API and Dashboard.
+- `.\startup.ps1 -OnlyGraph`: Launch only the Knowledge Graph viewer on port 8088.
+- `.\startup.ps1 -UpdateGraph`: Re-extract and refresh the Graphify AST knowledge graph before launching.
+- `.\startup.ps1 -RunTests`: Run the full pytest verification test suite before starting services.
+- `.\startup.ps1 -NoBrowser`: Start services without automatically opening the browser.
+- `.\startup.ps1 -OnlyDashboard -RemoteApiUrl https://<current-colab-tunnel>`: Run Streamlit locally and route model inference to the Colab API.
+- `.\startup.ps1 -ApiPort 8080 -DashboardPort 8502 -GraphPort 8089`: Custom port mappings.
 
 ---
 
@@ -79,6 +84,11 @@ uvicorn src.api.app:app --reload --port 8000
 ```bash
 streamlit run src/dashboard/app.py
 ```
+
+For Colab GPU inference with a local dashboard, follow the Colab setup in
+[SETUP.md](SETUP.md#6-run-model-inference-on-colab-with-a-local-dashboard). The tunnel URL changes
+when the Colab runtime restarts; update `-RemoteApiUrl` each time. Keep Dry-Run disabled for
+actual model-generated summaries.
 - **🏛️ Model Arena:** Live side-by-side comparative inference across BART, LED, and Qwen2.5 with live latency and speed counters.
 - **📊 Pareto Frontier:** Interactive Plotly curves (Quality vs. Latency, Memory vs. Quality, Green AI eco-efficiency).
 - **🔬 Evaluation Lab:** Score candidate summaries against gold-standard references with colored legal entity tags.

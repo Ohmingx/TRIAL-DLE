@@ -94,6 +94,32 @@ def test_summarize_all_models_dry_run(client):
     assert data["fastest_model"] is not None
 
 
+def test_summarize_selected_models_dry_run(client):
+    req = {
+        "text": "SECTION 1. This bill establishes a water infrastructure grant program.",
+        "models": ["led", "bart_base_dense", "led_base_sparse_4k"],
+        "dry_run": True,
+    }
+    response = client.post("/api/summarize", json=req)
+
+    assert response.status_code == 200
+    results = response.json()["results"]
+    assert [result["model_key"] for result in results] == [
+        "led_base_sparse_4k",
+        "bart_base_dense",
+    ]
+
+
+def test_summarize_rejects_empty_models_list(client):
+    response = client.post(
+        "/api/summarize",
+        json={"text": "A bill.", "models": [], "dry_run": True},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Select at least one model."
+
+
 def test_evaluate_endpoint(client):
     req = {
         "candidate_summary": "Pursuant to 33 U.S.C. 1251, Section 104 authorizes $450,000,000.",

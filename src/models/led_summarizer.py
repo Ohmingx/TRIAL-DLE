@@ -96,9 +96,8 @@ class LedSummarizer(BaseSummarizer):
             self.is_loaded = True
             logger.info("LedSummarizer successfully loaded on %s.", self.device)
         except Exception as e:
-            logger.error("Failed to load real LED weights: %s. Enabling dry-run fallback.", e)
-            self.dry_run = True
-            self.is_loaded = True
+            logger.exception("Failed to load real LED weights.")
+            raise RuntimeError("Failed to load real LED weights.") from e
 
         return self
 

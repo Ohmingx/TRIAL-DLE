@@ -131,9 +131,8 @@ class QwenSummarizer(BaseSummarizer):
             self.is_loaded = True
             logger.info("QwenSummarizer successfully loaded on %s.", self.device)
         except Exception as e:
-            logger.error("Failed to load real Qwen weights: %s. Enabling dry-run fallback.", e)
-            self.dry_run = True
-            self.is_loaded = True
+            logger.exception("Failed to load real Qwen weights.")
+            raise RuntimeError("Failed to load real Qwen weights.") from e
 
         return self
 

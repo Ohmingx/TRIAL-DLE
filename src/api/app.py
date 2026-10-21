@@ -96,16 +96,26 @@ def get_benchmarks():
 def summarize_text(req: SummarizeRequest):
     """
     Summarizes legal bill text.
-    If model_key is 'all', runs all three models sequentially and returns comparative results.
+    Runs selected models sequentially and returns comparative results.
     """
     if not req.text.strip():
         raise HTTPException(status_code=400, detail="Text field cannot be empty.")
 
-    target_keys = (
-        list(MODEL_REGISTRY.keys())
-        if req.model_key.lower() == "all"
-        else [resolve_model_key(req.model_key)]
-    )
+    try:
+        requested_keys = (
+            req.models
+            if req.models is not None
+            else (
+                list(MODEL_REGISTRY.keys())
+                if req.model_key.lower() == "all"
+                else [req.model_key]
+            )
+        )
+        if not requested_keys:
+            raise HTTPException(status_code=400, detail="Select at least one model.")
+        target_keys = list(dict.fromkeys(resolve_model_key(key) for key in requested_keys))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
     results: List[SingleSummaryItem] = []
     fastest_model = None

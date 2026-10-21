@@ -1,0 +1,444 @@
+{
+  "communities": {
+    "0": [
+      "dataclasses",
+      "re",
+      "src_metrics_entity_extractor",
+      "src_metrics_entity_extractor_extractedentities",
+      "src_metrics_entity_extractor_extractedentities_canonical_set",
+      "src_metrics_entity_extractor_extractedentities_to_dict",
+      "src_metrics_entity_extractor_extractedentities_total_count",
+      "src_metrics_entity_extractor_legalentityextractor",
+      "src_metrics_entity_extractor_legalentityextractor_compute_recall",
+      "src_metrics_entity_extractor_legalentityextractor_extract",
+      "src_metrics_entity_extractor_legalentityextractor_extract_dedupe",
+      "src_metrics_entity_extractor_legalentityextractor_init",
+      "src_metrics_entity_extractor_rationale_1",
+      "src_metrics_entity_extractor_rationale_105",
+      "src_metrics_entity_extractor_rationale_170",
+      "src_metrics_entity_extractor_rationale_41",
+      "src_metrics_entity_extractor_rationale_59",
+      "src_metrics_evaluator",
+      "src_metrics_evaluator_legalevaluationresult",
+      "src_metrics_evaluator_legalevaluationresult_to_dict",
+      "src_metrics_evaluator_legalevaluator",
+      "src_metrics_evaluator_legalevaluator_compute_bertscore",
+      "src_metrics_evaluator_legalevaluator_compute_fallback_rouge",
+      "src_metrics_evaluator_legalevaluator_compute_fallback_rouge_f1_overlap",
+      "src_metrics_evaluator_legalevaluator_compute_fallback_rouge_ngrams",
+      "src_metrics_evaluator_legalevaluator_compute_rouge",
+      "src_metrics_evaluator_legalevaluator_evaluate",
+      "src_metrics_evaluator_legalevaluator_get_rouge_scorer",
+      "src_metrics_evaluator_legalevaluator_init",
+      "src_metrics_evaluator_py_any",
+      "src_metrics_evaluator_rationale_1",
+      "src_metrics_evaluator_rationale_110",
+      "src_metrics_evaluator_rationale_124",
+      "src_metrics_evaluator_rationale_172",
+      "src_metrics_evaluator_rationale_61",
+      "src_metrics_evaluator_rationale_87",
+      "src_metrics_init",
+      "tests_test_evaluator",
+      "tests_test_evaluator_evaluator",
+      "tests_test_evaluator_py_fixture",
+      "tests_test_evaluator_rationale_1",
+      "tests_test_evaluator_test_full_evaluation_pipeline",
+      "tests_test_evaluator_test_rouge_calculation",
+      "tests_test_evaluator_test_rouge_partial_overlap",
+      "tests_test_legal_entity_regex",
+      "tests_test_legal_entity_regex_extractor",
+      "tests_test_legal_entity_regex_py_fixture",
+      "tests_test_legal_entity_regex_rationale_1",
+      "tests_test_legal_entity_regex_test_extract_monetary_amounts",
+      "tests_test_legal_entity_regex_test_extract_percentages",
+      "tests_test_legal_entity_regex_test_extract_sections",
+      "tests_test_legal_entity_regex_test_extract_usc_citations",
+      "tests_test_legal_entity_regex_test_legal_entity_recall_partial",
+      "tests_test_legal_entity_regex_test_legal_entity_recall_perfect_match"
+    ],
+    "1": [
+      "abc",
+      "logging",
+      "pathlib",
+      "peft",
+      "src_models_bart",
+      "src_models_bart_rationale_1",
+      "src_models_bart_summarizer",
+      "src_models_bart_summarizer_bartsummarizer",
+      "src_models_bart_summarizer_bartsummarizer_load",
+      "src_models_bart_summarizer_bartsummarizer_summarize",
+      "src_models_bart_summarizer_rationale_1",
+      "src_models_bart_summarizer_rationale_100",
+      "src_models_bart_summarizer_rationale_20",
+      "src_models_bart_summarizer_rationale_43",
+      "src_models_base",
+      "src_models_base_basesummarizer",
+      "src_models_base_basesummarizer_generate_dry_run_summary",
+      "src_models_base_basesummarizer_load",
+      "src_models_base_basesummarizer_summarize",
+      "src_models_base_rationale_1",
+      "src_models_base_rationale_113",
+      "src_models_base_rationale_134",
+      "src_models_base_rationale_151",
+      "src_models_base_rationale_22",
+      "src_models_base_rationale_61",
+      "src_models_base_summarizationresult",
+      "src_models_init",
+      "src_models_led",
+      "src_models_led_rationale_1",
+      "src_models_led_summarizer",
+      "src_models_led_summarizer_ledsummarizer_summarize",
+      "src_models_led_summarizer_rationale_1",
+      "src_models_led_summarizer_rationale_115",
+      "src_models_qwen_summarizer",
+      "src_models_qwen_summarizer_rationale_1",
+      "src_models_registry",
+      "src_models_registry_get_summarizer",
+      "src_models_registry_py_path",
+      "src_models_registry_rationale_1",
+      "src_models_registry_rationale_39",
+      "src_models_registry_rationale_57",
+      "src_models_registry_resolve_model_key",
+      "tests_test_base_summarizer",
+      "tests_test_base_summarizer_rationale_1",
+      "tests_test_base_summarizer_test_bart_summarize_dry_run",
+      "tests_test_base_summarizer_test_model_factory_and_metadata",
+      "tests_test_base_summarizer_test_registry_resolution",
+      "time",
+      "torch",
+      "transformers",
+      "typing"
+    ],
+    "2": [
+      "basemodel",
+      "fastapi",
+      "fastapi_middleware_cors",
+      "model_validator",
+      "post",
+      "pydantic",
+      "src_api_app",
+      "src_api_app_evaluate_summary",
+      "src_api_app_extract_legal_entities",
+      "src_api_app_rationale_1",
+      "src_api_app_rationale_146",
+      "src_api_app_rationale_169",
+      "src_api_app_rationale_97",
+      "src_api_app_summarize_text",
+      "src_api_init",
+      "src_api_schemas",
+      "src_api_schemas_evaluaterequest",
+      "src_api_schemas_evaluaterequest_validate_summaries",
+      "src_api_schemas_evaluateresponse",
+      "src_api_schemas_extractentitiesrequest",
+      "src_api_schemas_extractentitiesresponse",
+      "src_api_schemas_modelinfoitem",
+      "src_api_schemas_paretobenchmarkresponse",
+      "src_api_schemas_rationale_1",
+      "src_api_schemas_singlesummaryitem",
+      "src_api_schemas_summarizerequest",
+      "src_api_schemas_summarizerequest_validate_text",
+      "src_api_schemas_summarizeresponse"
+    ],
+    "3": [
+      "src_models_bart_bartsummarizer",
+      "src_models_bart_bartsummarizer_get_metadata",
+      "src_models_bart_bartsummarizer_load",
+      "src_models_bart_bartsummarizer_summarize",
+      "src_models_bart_rationale_24",
+      "src_models_bart_rationale_47",
+      "src_models_bart_rationale_91",
+      "src_models_bart_summarizer_bartsummarizer_get_metadata",
+      "src_models_base_basesummarizer_find_adapter_dir",
+      "src_models_base_basesummarizer_get_metadata",
+      "src_models_base_modelmetadata",
+      "src_models_base_modelmetadata_to_dict",
+      "src_models_base_py_any",
+      "src_models_base_rationale_100",
+      "src_models_base_rationale_156",
+      "src_models_base_rationale_42",
+      "src_models_base_summarizationresult_to_dict",
+      "src_models_led_ledsummarizer",
+      "src_models_led_ledsummarizer_create_global_attention_mask",
+      "src_models_led_ledsummarizer_get_metadata",
+      "src_models_led_ledsummarizer_load",
+      "src_models_led_ledsummarizer_summarize",
+      "src_models_led_rationale_104",
+      "src_models_led_rationale_27",
+      "src_models_led_rationale_51",
+      "src_models_led_rationale_63",
+      "src_models_led_summarizer_ledsummarizer_get_metadata",
+      "tensor"
+    ],
+    "4": [
+      "pytest",
+      "src_models_qwen_summarizer_py_any",
+      "src_models_qwen_summarizer_qwensummarizer",
+      "src_models_qwen_summarizer_qwensummarizer_format_prompt",
+      "src_models_qwen_summarizer_qwensummarizer_get_metadata",
+      "src_models_qwen_summarizer_qwensummarizer_load",
+      "src_models_qwen_summarizer_qwensummarizer_slice_prompt_tokens",
+      "src_models_qwen_summarizer_qwensummarizer_summarize",
+      "src_models_qwen_summarizer_rationale_151",
+      "src_models_qwen_summarizer_rationale_24",
+      "src_models_qwen_summarizer_rationale_54",
+      "src_models_qwen_summarizer_rationale_62",
+      "src_models_qwen_summarizer_rationale_70",
+      "tests_test_qwen_guardrails",
+      "tests_test_qwen_guardrails_rationale_1",
+      "tests_test_qwen_guardrails_rationale_33",
+      "tests_test_qwen_guardrails_test_qwen_metadata",
+      "tests_test_qwen_guardrails_test_qwen_prompt_formatting",
+      "tests_test_qwen_guardrails_test_qwen_slice_prompt_tokens_guardrail",
+      "tests_test_qwen_guardrails_test_qwen_summarize_dry_run"
+    ],
+    "5": [
+      "get",
+      "json",
+      "pandas",
+      "plotly_express",
+      "plotly_graph_objects",
+      "src_api_app_get_benchmarks",
+      "src_api_app_get_models",
+      "src_api_app_health",
+      "src_api_app_rationale_80",
+      "src_api_app_rationale_86",
+      "src_api_app_root",
+      "src_dashboard_app",
+      "src_dashboard_app_rationale_1",
+      "src_models_registry_get_all_model_metadata",
+      "src_models_registry_get_pareto_benchmarks",
+      "src_models_registry_rationale_78",
+      "src_models_registry_rationale_87",
+      "streamlit",
+      "tests_test_base_summarizer_test_pareto_benchmarks_loading"
+    ],
+    "6": [
+      "src_models_bart_bartsummarizer_init",
+      "src_models_bart_py_path",
+      "src_models_bart_summarizer_bartsummarizer_init",
+      "src_models_bart_summarizer_py_path",
+      "src_models_base_basesummarizer_init",
+      "src_models_base_basesummarizer_resolve_device",
+      "src_models_base_py_path",
+      "src_models_base_rationale_89",
+      "src_models_led_ledsummarizer_init",
+      "src_models_led_py_path",
+      "src_models_led_summarizer_ledsummarizer_init",
+      "src_models_led_summarizer_py_path",
+      "src_models_qwen_summarizer_py_path",
+      "src_models_qwen_summarizer_qwensummarizer_init"
+    ],
+    "7": [
+      "src_models_led_summarizer_ledsummarizer",
+      "src_models_led_summarizer_ledsummarizer_create_global_attention_mask",
+      "src_models_led_summarizer_ledsummarizer_load",
+      "src_models_led_summarizer_py_any",
+      "src_models_led_summarizer_rationale_23",
+      "src_models_led_summarizer_rationale_47",
+      "src_models_led_summarizer_rationale_61",
+      "tests_test_led_guardrails",
+      "tests_test_led_guardrails_rationale_1",
+      "tests_test_led_guardrails_rationale_20",
+      "tests_test_led_guardrails_test_led_global_attention_mask_guardrail",
+      "tests_test_led_guardrails_test_led_global_attention_mask_guardrail_init",
+      "tests_test_led_guardrails_test_led_metadata",
+      "tests_test_led_guardrails_test_led_summarize_dry_run"
+    ],
+    "8": [
+      "fastapi_testclient",
+      "tests_test_api",
+      "tests_test_api_client",
+      "tests_test_api_py_fixture",
+      "tests_test_api_rationale_1",
+      "tests_test_api_test_evaluate_endpoint",
+      "tests_test_api_test_extract_entities_endpoint",
+      "tests_test_api_test_get_models_endpoint",
+      "tests_test_api_test_get_pareto_benchmarks_endpoint",
+      "tests_test_api_test_health_endpoint",
+      "tests_test_api_test_root_endpoint",
+      "tests_test_api_test_summarize_all_models_dry_run",
+      "tests_test_api_test_summarize_single_model_dry_run"
+    ],
+    "9": [
+      "requests",
+      "sys",
+      "test_api_example",
+      "test_api_example_rationale_1",
+      "test_api_example_run_test"
+    ],
+    "10": [
+      "startup",
+      "startup_write_err",
+      "startup_write_header",
+      "startup_write_info",
+      "startup_write_success"
+    ],
+    "11": [
+      "src_init"
+    ],
+    "12": [
+      "tests_init"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06079664570230608,
+    "1": 0.09803921568627451,
+    "2": 0.14285714285714285,
+    "3": 0.09788359788359788,
+    "4": 0.1631578947368421,
+    "5": 0.12280701754385964,
+    "6": 0.14285714285714285,
+    "7": 0.17582417582417584,
+    "8": 0.15384615384615385,
+    "9": 0.4,
+    "10": 0.4,
+    "11": 1.0,
+    "12": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_models_base_basesummarizer",
+      "label": "BaseSummarizer",
+      "degree": 25
+    },
+    {
+      "id": "src_models_base_summarizationresult",
+      "label": "SummarizationResult",
+      "degree": 23
+    },
+    {
+      "id": "src_models_base_modelmetadata",
+      "label": "ModelMetadata",
+      "degree": 21
+    },
+    {
+      "id": "src_models_qwen_summarizer_qwensummarizer",
+      "label": "QwenSummarizer",
+      "degree": 19
+    },
+    {
+      "id": "src_models_led_summarizer_ledsummarizer",
+      "label": "LedSummarizer",
+      "degree": 17
+    },
+    {
+      "id": "src_metrics_evaluator_legalevaluator",
+      "label": "LegalEvaluator",
+      "degree": 14
+    },
+    {
+      "id": "src_metrics_entity_extractor_legalentityextractor",
+      "label": "LegalEntityExtractor",
+      "degree": 13
+    },
+    {
+      "id": "src_models_bart_summarizer_bartsummarizer",
+      "label": "BartSummarizer",
+      "degree": 13
+    },
+    {
+      "id": "src_models_registry_get_summarizer",
+      "label": "get_summarizer()",
+      "degree": 11
+    },
+    {
+      "id": "src_models_led_ledsummarizer",
+      "label": "LedSummarizer",
+      "degree": 10
+    }
+  ],
+  "surprises": [
+    {
+      "source": "extractor()",
+      "target": "LegalEntityExtractor",
+      "source_files": [
+        "tests/test_legal_entity_regex.py",
+        "src/metrics/entity_extractor.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "test_full_evaluation_pipeline()",
+      "target": "LegalEvaluationResult",
+      "source_files": [
+        "tests/test_evaluator.py",
+        "src/metrics/evaluator.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "evaluator()",
+      "target": "LegalEvaluator",
+      "source_files": [
+        "tests/test_evaluator.py",
+        "src/metrics/evaluator.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "test_model_factory_and_metadata()",
+      "target": "BaseSummarizer",
+      "source_files": [
+        "tests/test_base_summarizer.py",
+        "src/models/base.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "test_bart_summarize_dry_run()",
+      "target": "SummarizationResult",
+      "source_files": [
+        "tests/test_base_summarizer.py",
+        "src/models/base.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `BaseSummarizer` connect `BaseSummarizer` to `ModelMetadata`, `QwenSummarizer`, `.__init__`, `LedSummarizer`?",
+      "why": "High betweenness centrality (0.136) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 2 inferred relationships involving `BaseSummarizer` (e.g. with `get_summarizer()` and `test_model_factory_and_metadata()`) actually correct?",
+      "why": "`BaseSummarizer` has 2 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `LegalEvaluator` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06079664570230608 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `LegalEvaluator` connect `LegalEvaluator` to `api/app.py`, `dashboard/app.py`?",
+      "why": "High betweenness centrality (0.099) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 6 inferred relationships involving `SummarizationResult` (e.g. with `BartSummarizer` and `BartSummarizer`) actually correct?",
+      "why": "`SummarizationResult` has 6 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `BaseSummarizer` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09803921568627451 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `QwenSummarizer` connect `QwenSummarizer` to `BaseSummarizer`, `ModelMetadata`, `.__init__`?",
+      "why": "High betweenness centrality (0.095) - this node is a cross-community bridge."
+    }
+  ]
+}
